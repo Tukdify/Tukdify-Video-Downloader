@@ -24,5 +24,14 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Local test downloads
+# Local test downloads (downloaded media should never be committed)
 /downloads/
+*.mp4
+*.mkv
+*.webm
+*.mp3
+*.m4a
+*.part
+*.ytdl
+*.srt
+*.vtt

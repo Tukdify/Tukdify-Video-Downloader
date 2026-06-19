@@ -3,8 +3,8 @@
 # shows proper ownership. Referenced by the build via --version-file.
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 0, 0, 0),
-    prodvers=(1, 0, 0, 0),
+    filevers=(1, 1, 0, 0),
+    prodvers=(1, 1, 0, 0),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -20,12 +20,12 @@ VSVersionInfo(
           [
             StringStruct('CompanyName', 'Sourabh Jangid'),
             StringStruct('FileDescription', 'Multi-platform media downloader'),
-            StringStruct('FileVersion', '1.0.0.0'),
+            StringStruct('FileVersion', '1.1.0.0'),
             StringStruct('InternalName', 'MediaForge'),
             StringStruct('LegalCopyright', '© 2026 Sourabh Jangid'),
             StringStruct('OriginalFilename', 'MediaForge.exe'),
             StringStruct('ProductName', 'MediaForge'),
-            StringStruct('ProductVersion', '1.0.0.0'),
+            StringStruct('ProductVersion', '1.1.0.0'),
           ],
         )
       ]

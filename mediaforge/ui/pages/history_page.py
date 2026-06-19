@@ -8,6 +8,7 @@ from pathlib import Path
 import customtkinter as ctk
 
 from ...core import history as history_store
+from .. import theme as t
 
 
 class HistoryPage(ctk.CTkFrame):
@@ -17,19 +18,23 @@ class HistoryPage(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
-        header = ctk.CTkFrame(self, fg_color="transparent")
-        header.grid(row=0, column=0, sticky="ew", padx=24, pady=(24, 8))
-        header.grid_columnconfigure(0, weight=1)
-        ctk.CTkLabel(header, text="History",
-                     font=ctk.CTkFont(size=22, weight="bold")
-                     ).grid(row=0, column=0, sticky="w")
-        ctk.CTkButton(header, text="Clear", width=90, fg_color="gray30",
-                      hover_color="#b91c1c", command=self._clear
-                      ).grid(row=0, column=1, sticky="e")
+        head_host = ctk.CTkFrame(self, fg_color="transparent")
+        head_host.grid(row=0, column=0, sticky="ew")
+        head = t.center_column(head_host)
+        head.grid_columnconfigure(0, weight=1)
+        ctk.CTkLabel(head, text="History", font=t.font(22, "bold"), text_color=t.TEXT
+                     ).grid(row=0, column=0, sticky="w", pady=(26, 16))
+        t.ghost_button(head, text="Clear", width=88, height=32, hover_color=t.ERR,
+                       command=self._clear).grid(row=0, column=1, sticky="e", pady=(26, 16))
 
-        self.list = ctk.CTkScrollableFrame(self, fg_color="transparent")
-        self.list.grid(row=1, column=0, sticky="nsew", padx=20, pady=(0, 16))
-        self.list.grid_columnconfigure(0, weight=1)
+        scroll_host = ctk.CTkFrame(self, fg_color="transparent")
+        scroll_host.grid(row=1, column=0, sticky="nsew")
+        scroll_host.grid_rowconfigure(0, weight=1)
+        scroll_host.grid_columnconfigure(0, weight=1)
+        self.scroll = ctk.CTkScrollableFrame(scroll_host, fg_color="transparent")
+        self.scroll.grid(row=0, column=0, sticky="nsew")
+        self.scroll.grid_columnconfigure(0, weight=1)
+        self.list = t.center_column(self.scroll, gutter=8)
 
     def on_show(self):
         for w in self.list.winfo_children():
@@ -37,27 +42,26 @@ class HistoryPage(ctk.CTkFrame):
         entries = history_store.load()
         if not entries:
             ctk.CTkLabel(self.list, text="Nothing downloaded yet.",
-                         text_color=("gray50", "gray50")).grid(row=0, column=0, pady=24)
+                         font=t.font(13), text_color=t.TEXT_FAINT
+                         ).grid(row=0, column=0, pady=40)
             return
         for i, e in enumerate(entries):
             self._row(i, e)
 
     def _row(self, i: int, e: dict):
-        card = ctk.CTkFrame(self.list, corner_radius=8)
-        card.grid(row=i, column=0, sticky="ew", pady=4, padx=4)
+        card = ctk.CTkFrame(self.list, fg_color=t.CARD_BG, corner_radius=12,
+                            border_width=1, border_color=t.BORDER)
+        card.grid(row=i, column=0, sticky="ew", pady=6)
         card.grid_columnconfigure(0, weight=1)
-        ctk.CTkLabel(card, text=e.get("title", "?"), anchor="w",
-                     font=ctk.CTkFont(size=13, weight="bold"),
-                     wraplength=560, justify="left"
-                     ).grid(row=0, column=0, sticky="w", padx=12, pady=(8, 0))
+        ctk.CTkLabel(card, text=e.get("title", "?"), anchor="w", text_color=t.TEXT,
+                     font=t.font(13, "bold"), wraplength=470, justify="left"
+                     ).grid(row=0, column=0, sticky="w", padx=14, pady=(12, 0))
         meta = f"{e.get('platform','')} · {e.get('mode','')} · {e.get('when','')}"
-        ctk.CTkLabel(card, text=meta, anchor="w", text_color=("gray40", "gray60"),
-                     font=ctk.CTkFont(size=11)
-                     ).grid(row=1, column=0, sticky="w", padx=12, pady=(0, 8))
-        ctk.CTkButton(card, text="Open", width=70, fg_color="gray30",
-                      hover_color="gray25",
-                      command=lambda p=e.get("filepath", ""): self._open(p)
-                      ).grid(row=0, column=1, rowspan=2, padx=12)
+        ctk.CTkLabel(card, text=meta, anchor="w", text_color=t.TEXT_MUTED,
+                     font=t.font(11)).grid(row=1, column=0, sticky="w", padx=14, pady=(2, 12))
+        t.ghost_button(card, text="Open", width=72, height=30,
+                       command=lambda p=e.get("filepath", ""): self._open(p)
+                       ).grid(row=0, column=1, rowspan=2, padx=14)
 
     def _open(self, path: str):
         folder = str(Path(path).parent) if path else str(Path.home())

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import re
 import threading
 from dataclasses import dataclass, field
 from typing import Callable
@@ -9,6 +10,15 @@ from typing import Callable
 import yt_dlp
 
 from ..config import find_ffmpeg
+
+# yt-dlp colourises its _speed_str / _eta_str with ANSI escape codes; strip them
+# so the GUI never shows raw terminal sequences like "[0;32m498 KB/s[0m".
+_ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _clean(text: str) -> str:
+    """Remove ANSI colour codes and surrounding whitespace from yt-dlp strings."""
+    return _ANSI_RE.sub("", text or "").strip()
 
 
 class CancelledError(Exception):
@@ -198,8 +208,8 @@ class Downloader:
             total = d.get("total_bytes") or d.get("total_bytes_estimate") or 0
             done = d.get("downloaded_bytes") or 0
             job.progress = (done / total) if total else 0.0
-            job.speed = d.get("_speed_str", "").strip()
-            job.eta = d.get("_eta_str", "").strip()
+            job.speed = _clean(d.get("_speed_str", ""))
+            job.eta = _clean(d.get("_eta_str", ""))
             job.status = "downloading"
         elif status == "finished":
             # download done; post-processing (merge/convert) may still run
@@ -242,6 +252,7 @@ class Downloader:
 
 def _friendly_error(raw: str) -> str:
     """Translate noisy yt-dlp errors into something a human can act on."""
+    raw = _clean(raw)
     low = raw.lower()
     if "drm" in low or "this video is drm protected" in low:
         return "This video is DRM-protected and cannot be downloaded."
