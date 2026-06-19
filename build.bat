@@ -29,6 +29,7 @@ if exist assets\icon.ico set ICON=--icon assets\icon.ico
 
 pyinstaller --noconfirm --onefile --windowed ^
   --name MediaForge ^
+  --version-file version_info.txt ^
   --collect-all customtkinter ^
   --add-data "assets;assets" ^
   --add-binary "ffmpeg.exe;." ^
