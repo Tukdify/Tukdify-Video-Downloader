@@ -1,5 +1,4 @@
-# Runtime dependencies.
-# yt-dlp is intentionally unpinned: builds always pull the newest version so
-# each release ships with up-to-date site extractors (see CI workflow).
-yt-dlp
-customtkinter>=5.2.0
+# Runtime dependencies — pinned for reproducible builds.
+# Bump these deliberately when you want newer site support, then rebuild.
+yt-dlp==2026.6.9
+customtkinter==5.2.2

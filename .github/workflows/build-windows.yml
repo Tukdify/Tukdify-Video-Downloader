@@ -1,14 +1,12 @@
 name: Build Windows EXE
 
 # Builds MediaForge.exe on a Windows runner (you develop on Linux; GitHub
-# produces the .exe). Every build pulls the newest yt-dlp so releases never
-# go stale, and a weekly schedule auto-publishes a fresh build with zero effort.
+# produces the .exe). Dependency versions (yt-dlp, ffmpeg) are pinned for
+# reproducible builds — bump them deliberately, then push to rebuild.
 on:
   push:
     branches: [main]
   workflow_dispatch:        # lets you trigger a build manually from the Actions tab
-  schedule:
-    - cron: "0 6 * * 1"     # every Monday 06:00 UTC -> always-fresh yt-dlp
 
 permissions:
   contents: write           # needed to publish the release
@@ -25,15 +23,16 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install dependencies (newest yt-dlp)
+      - name: Install dependencies (pinned)
         run: |
           python -m pip install --upgrade pip
-          pip install -U yt-dlp customtkinter pyinstaller
+          pip install -r requirements.txt
+          pip install pyinstaller
 
-      - name: Download ffmpeg + ffprobe
+      - name: Download ffmpeg + ffprobe (pinned 7.1)
         shell: pwsh
         run: |
-          $url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip"
+          $url = "https://github.com/GyanD/codexffmpeg/releases/download/7.1/ffmpeg-7.1-essentials_build.zip"
           Invoke-WebRequest -Uri $url -OutFile ffmpeg.zip
           Expand-Archive -Path ffmpeg.zip -DestinationPath ffmpeg_extracted -Force
           $ffmpeg  = Get-ChildItem -Recurse -Filter ffmpeg.exe  ffmpeg_extracted | Select-Object -First 1
@@ -54,6 +53,19 @@ jobs:
             --add-binary "ffprobe.exe;." `
             @iconArg `
             main.py
+
+      - name: Smoke-test the built EXE (does it launch?)
+        shell: pwsh
+        run: |
+          # Runs the packaged app in --selftest mode: it builds the full window,
+          # renders every page, then exits 0. Proves the .exe actually launches
+          # with all dependencies + ffmpeg bundled correctly.
+          $p = Start-Process -FilePath "dist/MediaForge.exe" -ArgumentList "--selftest" -PassThru -Wait
+          if ($p.ExitCode -ne 0) {
+            Write-Error "MediaForge.exe self-test failed (exit code $($p.ExitCode))"
+            exit 1
+          }
+          Write-Host "EXE launched and self-test passed."
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
