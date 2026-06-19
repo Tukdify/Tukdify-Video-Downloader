@@ -1,4 +1,9 @@
-# ⚒ MediaForge
+<p align="center">
+  <img src="assets/logo.png" alt="MediaForge" width="180">
+</p>
+
+<h1 align="center">MediaForge</h1>
+<p align="center"><em>Download · Save · Create</em></p>
 
 **Free, offline, ad-free media downloader for Windows.**
 Download video, audio (MP3), thumbnails and subtitles from YouTube and many

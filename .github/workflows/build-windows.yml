@@ -49,6 +49,7 @@ jobs:
           pyinstaller --noconfirm --onefile --windowed `
             --name MediaForge `
             --collect-all customtkinter `
+            --add-data "assets;assets" `
             --add-binary "ffmpeg.exe;." `
             --add-binary "ffprobe.exe;." `
             @iconArg `

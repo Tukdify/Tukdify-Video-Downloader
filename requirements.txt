@@ -2,3 +2,4 @@
 # Bump these deliberately when you want newer site support, then rebuild.
 yt-dlp==2026.6.9
 customtkinter==5.2.2
+pillow==12.2.0

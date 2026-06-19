@@ -35,6 +35,12 @@ def default_download_dir() -> Path:
     return candidate if candidate.exists() else Path.home()
 
 
+def logo_path() -> Path | None:
+    """Path to the bundled logo PNG, or None if it isn't present."""
+    p = resource_dir() / "assets" / "logo.png"
+    return p if p.exists() else None
+
+
 def find_ffmpeg() -> str | None:
     """Locate an ffmpeg binary.
 
