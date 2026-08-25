@@ -79,12 +79,24 @@ def support_asset(name: str) -> Path | None:
 
 def logo_path() -> Path | None:
     """Path to the primary 256px or default Falcon logo PNG."""
-    return branding_asset("tukdify_falcon_256.png") or branding_asset("tukdify_falcon.png") or branding_asset("logo.png")
+    return branding_asset("tukdify_falcon_256.png") or branding_asset("tukdify_falcon.png")
 
 
 def falcon_mark_path() -> Path | None:
     """Path to the compact 24px header Falcon mark."""
     return branding_asset("tukdify_mark_24.png") or logo_path()
+
+
+def app_icon_path() -> Path | None:
+    """Path to the canonical Tukdify Falcon Windows .ico file."""
+    candidates = [
+        resource_dir() / "assets" / "tukdify.ico",
+        resource_dir() / "assets" / "branding" / "tukdify.ico",
+    ]
+    for p in candidates:
+        if p.exists():
+            return p
+    return None
 
 
 def find_ffmpeg() -> str | None:

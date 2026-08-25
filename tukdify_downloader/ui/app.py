@@ -1,11 +1,12 @@
 """Main application window: sidebar navigation + stacked pages."""
 from __future__ import annotations
 
+import sys
 import customtkinter as ctk
 from PIL import Image
 
 from .. import __app_name__, __version__
-from ..config import falcon_mark_path
+from ..config import app_icon_path, falcon_mark_path, logo_path
 from ..core import settings as settings_store
 from . import theme as t
 from .dialogs import FollowDialog, SupportDialog
@@ -28,6 +29,8 @@ class App(ctk.CTk):
         self.minsize(980, 620)
         self.configure(fg_color=t.APP_BG)
 
+        self._apply_window_icon()
+
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
@@ -36,6 +39,35 @@ class App(ctk.CTk):
         self.select_page("Downloads")
 
         self.protocol("WM_DELETE_WINDOW", self._on_close)
+
+    def _apply_window_icon(self):
+        """Apply the canonical Tukdify Falcon icon to the window titlebar and OS taskbar."""
+        if sys.platform == "win32":
+            try:
+                import ctypes
+                ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("tukdify.videodownloader.2.0")
+            except Exception:
+                pass
+
+        ico = app_icon_path()
+        if ico and ico.exists():
+            try:
+                self.iconbitmap(default=str(ico))
+            except Exception:
+                try:
+                    self.iconbitmap(str(ico))
+                except Exception:
+                    pass
+
+        # Also set iconphoto using PhotoImage for Linux/macOS and fallback
+        try:
+            from PIL import ImageTk
+            png_path = logo_path() or falcon_mark_path()
+            if png_path and png_path.exists():
+                self._window_photo = ImageTk.PhotoImage(file=str(png_path))
+                self.wm_iconphoto(True, self._window_photo)
+        except Exception:
+            pass
 
     # -- sidebar ------------------------------------------------------------
     def _build_sidebar(self):

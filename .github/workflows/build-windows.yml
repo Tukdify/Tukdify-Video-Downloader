@@ -44,7 +44,7 @@ jobs:
         shell: pwsh
         run: |
           $iconArg = @()
-          if (Test-Path "assets/icon.ico") { $iconArg = @("--icon", "assets/icon.ico") }
+          if (Test-Path "assets/tukdify.ico") { $iconArg = @("--icon", "assets/tukdify.ico") }
           pyinstaller --noconfirm --onefile --windowed `
             --name Tukdify-Video-Downloader `
             --version-file version_info.txt `

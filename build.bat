@@ -25,7 +25,7 @@ if not exist ffmpeg.exe (
 
 echo [4/4] Building EXE...
 set ICON=
-if exist assets\icon.ico set ICON=--icon assets\icon.ico
+if exist assets\tukdify.ico set ICON=--icon assets\tukdify.ico
 
 pyinstaller --noconfirm --onefile --windowed ^
   --name Tukdify-Video-Downloader ^
