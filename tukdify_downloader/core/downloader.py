@@ -97,6 +97,15 @@ def extract_info(url: str, playlist: bool = False) -> MediaInfo:
         "logger": _quiet_logger(),
         "noplaylist": not playlist,
         "extract_flat": "in_playlist" if playlist else False,
+        "extractor_args": {
+            "youtube": {
+                "player_client": ["ios", "android", "mweb", "web"],
+            }
+        },
+        "http_headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9",
+        },
     }
     with yt_dlp.YoutubeDL(opts) as ydl:
         data = ydl.extract_info(url, download=False)
@@ -182,12 +191,23 @@ class Downloader:
             "noplaylist": not job.is_playlist,
             "ignoreerrors": job.is_playlist,   # keep going on a bad playlist item
             "continuedl": True,                 # resume partial files
-            "retries": 5,
+            "retries": 10,
+            "fragment_retries": 10,
+            "http_chunk_size": 10485760,        # 10MB chunk size prevents throttling
             "quiet": True,
             "no_warnings": True,
             "logger": _quiet_logger(),
             "progress_hooks": [self._hook],
             "postprocessors": [],
+            "extractor_args": {
+                "youtube": {
+                    "player_client": ["ios", "android", "mweb", "web"],
+                }
+            },
+            "http_headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+                "Accept-Language": "en-US,en;q=0.9",
+            },
         }
 
         ffmpeg_dir = find_ffmpeg()
@@ -288,6 +308,8 @@ def _friendly_error(raw: str) -> str:
     """Translate noisy yt-dlp errors into something a human can act on."""
     raw = _clean(raw)
     low = raw.lower()
+    if "403" in low or "forbidden" in low:
+        return "HTTP 403 Forbidden — streaming token expired or bot-protection triggered. Retrying will resolve it."
     if "drm" in low or "this video is drm protected" in low:
         return "This video is DRM-protected and cannot be downloaded."
     if "private video" in low:

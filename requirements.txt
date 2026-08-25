@@ -1,5 +1,5 @@
 # Runtime dependencies — pinned for reproducible builds.
 # Bump these deliberately when you want newer site support, then rebuild.
-yt-dlp==2026.6.9
+yt-dlp==2026.8.19
 customtkinter==5.2.2
 pillow==12.2.0

@@ -1,64 +1,78 @@
 """Central design tokens for Tukdify Video Downloader.
 
-Exact Tukdify Master Brand alignment:
-  - Deep Obsidian surfaces (#0A0D14, #0E131F, #141A29, #1A2236)
-  - Trust Blue (#2563EB, #1D4ED8)
-  - Technical Cyan (#06B6D4, #0891B2)
-  - Restrained Violet (#8B5CF6)
-  - Metal Silver (#E2E8F0, #94A3B8)
+Exact Tukdify Clips Obsidian Studio Design System (Claude & Lovable design skills):
+  - Deep obsidian studio canvas: #0e1017
+  - Primary card & section panels: #171923
+  - Inset wells, inputs, list rows: #1f212d
+  - Elevated surfaces, popovers, hover states: #252838
+  - Structural borders: #2b2f42 / Hover: #3b415a
+  - Vivid Indigo brand accent: #6366f1 (Hover: #7a7dff, Pressed: #4f52d6)
+  - Accessible high-contrast typography: #f0f2f8, muted: #8b92a7, faint: #52576d
+  - Semantic status: Success (#10b981), Warning (#f59e0b), Error (#ef4444)
 """
 from __future__ import annotations
 
 import customtkinter as ctk
 
 # -- layout -----------------------------------------------------------------
-SIDEBAR_W = 220          # sidebar width in logical px
-CONTENT_W = 740          # max width of the centred content column
+SIDEBAR_W = 224          # sidebar width in logical px
+CONTENT_W = 760          # max width of the centred content column
 GUTTER = 24              # min horizontal breathing room either side
 
 # -- surfaces (light, dark) -------------------------------------------------
-APP_BG = ("#f4f6f9", "#0a0d14")
-SIDEBAR_BG = ("#eaedf3", "#0e131f")
-CARD_BG = ("#ffffff", "#141a29")
-CARD_HOVER = ("#f0f3f8", "#1a2236")
-INPUT_BG = ("#ffffff", "#10141f")
-BORDER = ("#dbe1ea", "#222d42")
-BORDER_HOVER = ("#94a3b8", "#334155")
+APP_BG = ("#f6f8fb", "#0e1017")
+SIDEBAR_BG = ("#edf0f6", "#12141d")
+CARD_BG = ("#ffffff", "#171923")
+CARD_HOVER = ("#f1f4f9", "#252838")
+INPUT_BG = ("#f8fafc", "#1f212d")
+INPUT_BORDER = ("#d5dbe5", "#2b2f42")
+BORDER = ("#dbe1ea", "#2b2f42")
+BORDER_HOVER = ("#94a3b8", "#3b415a")
+BORDER_FOCUS = "#6366f1"
 
 # -- text (light, dark) -----------------------------------------------------
-TEXT = ("#0f172a", "#f8fafc")
-TEXT_MUTED = ("#475569", "#94a3b8")
-TEXT_FAINT = ("#64748b", "#64748b")
+TEXT = ("#0f172a", "#f0f2f8")
+TEXT_MUTED = ("#475569", "#8b92a7")
+TEXT_FAINT = ("#64748b", "#52576d")
 
-# -- Tukdify Master Accents -------------------------------------------------
-# Trust Blue (Primary CTA, Active Navigation)
-ACCENT = "#2563eb"
-ACCENT_HOVER = "#1d4ed8"
-ACCENT_SOFT = ("#dbeafe", "#172554")
+# -- Tukdify Clips Vivid Indigo Accent --------------------------------------
+ACCENT = "#6366f1"
+ACCENT_HOVER = "#7a7dff"
+ACCENT_PRESSED = "#4f52d6"
+ACCENT_SOFT = ("#e0e7ff", "#1e1b4b")
 ON_ACCENT = "#ffffff"
 
-# Technical Cyan (Speed, Metrics, Progress fill)
-CYAN = "#06b6d4"
-CYAN_HOVER = "#0891b2"
-CYAN_SOFT = ("#cffafe", "#164e63")
-ON_CYAN = "#ffffff"
+# -- semantic status --------------------------------------------------------
+SUCCESS = "#10b981"
+SUCCESS_HOVER = "#059669"
+SUCCESS_SOFT = ("#d1fae5", "#064e3b")
 
-# Restrained Violet (Ecosystem bridge: Clips, Multicompressor)
-VIOLET = "#8b5cf6"
-VIOLET_HOVER = "#7c3aed"
-VIOLET_SOFT = ("#ede9fe", "#2e1065")
-ON_VIOLET = "#ffffff"
+WARNING = "#f59e0b"
+WARNING_HOVER = "#d97706"
+WARNING_SOFT = ("#fef3c7", "#78350f")
 
-# -- status -----------------------------------------------------------------
-OK = "#10b981"
-OK_HOVER = "#059669"
-ERR = "#ef4444"
-ERR_HOVER = "#dc2626"
-WARN = "#f59e0b"
-WARN_HOVER = "#d97706"
+ERROR = "#ef4444"
+ERROR_HOVER = "#dc2626"
+ERROR_SOFT = ("#fee2e2", "#7f1d1d")
+
+# Backward compatibility aliases
+OK = SUCCESS
+OK_HOVER = SUCCESS_HOVER
+WARN = WARNING
+WARN_HOVER = WARNING_HOVER
+ERR = ERROR
+ERR_HOVER = ERROR_HOVER
+CYAN = ACCENT
+CYAN_HOVER = ACCENT_HOVER
+CYAN_SOFT = ACCENT_SOFT
+ON_CYAN = ON_ACCENT
+VIOLET = ACCENT
+VIOLET_HOVER = ACCENT_HOVER
+VIOLET_SOFT = ACCENT_SOFT
+ON_VIOLET = ON_ACCENT
 
 # -- typography -------------------------------------------------------------
-FAMILY = "Segoe UI"      # native on Windows; CTk falls back gracefully elsewhere
+FAMILY = "Segoe UI"
 FAMILY_MONO = "Consolas"
 
 
@@ -88,41 +102,41 @@ def style_segmented(widget: ctk.CTkSegmentedButton):
     widget.configure(
         fg_color=INPUT_BG, selected_color=ACCENT, selected_hover_color=ACCENT_HOVER,
         unselected_color=INPUT_BG, unselected_hover_color=CARD_HOVER,
-        text_color=TEXT, text_color_disabled=TEXT_FAINT, corner_radius=10,
+        text_color=TEXT, text_color_disabled=TEXT_FAINT, corner_radius=8,
     )
 
 
 def style_optionmenu(widget: ctk.CTkOptionMenu):
     widget.configure(
         fg_color=INPUT_BG, button_color=INPUT_BG, button_hover_color=CARD_HOVER,
-        text_color=TEXT, corner_radius=10,
+        text_color=TEXT, corner_radius=8,
     )
 
 
 def primary_button(master, **kw) -> ctk.CTkButton:
-    """The dominant Trust Blue call-to-action button."""
+    """The dominant Vivid Indigo call-to-action button."""
     opts = dict(
         fg_color=ACCENT, hover_color=ACCENT_HOVER, text_color=ON_ACCENT,
-        corner_radius=10, font=font(14, "bold"),
+        corner_radius=8, font=font(14, "bold"),
     )
     opts.update(kw)
     return ctk.CTkButton(master, **opts)
 
 
 def cyan_button(master, **kw) -> ctk.CTkButton:
-    """A Technical Cyan highlight button (Analyze / Quick Action)."""
+    """Highlight button (Analyze / Quick Action) styled with Vivid Indigo."""
     opts = dict(
-        fg_color=CYAN, hover_color=CYAN_HOVER, text_color=ON_CYAN,
-        corner_radius=10, font=font(13, "bold"),
+        fg_color=ACCENT, hover_color=ACCENT_HOVER, text_color=ON_ACCENT,
+        corner_radius=8, font=font(13, "bold"),
     )
     opts.update(kw)
     return ctk.CTkButton(master, **opts)
 
 
 def violet_button(master, **kw) -> ctk.CTkButton:
-    """An ecosystem bridge button (Edit in Clips / Multicompressor)."""
+    """Ecosystem bridge button (Clips, Support, Links)."""
     opts = dict(
-        fg_color=VIOLET_SOFT, hover_color=VIOLET, text_color=VIOLET,
+        fg_color=ACCENT_SOFT, hover_color=ACCENT, text_color=TEXT,
         corner_radius=8, font=font(12, "bold"), border_width=1, border_color=BORDER,
     )
     opts.update(kw)
@@ -130,11 +144,10 @@ def violet_button(master, **kw) -> ctk.CTkButton:
 
 
 def ghost_button(master, **kw) -> ctk.CTkButton:
-    """A secondary button (transparent surface with subtle border)."""
+    """A secondary button (surface with subtle border)."""
     opts = dict(
-        fg_color="transparent", hover_color=CARD_HOVER, text_color=TEXT,
+        fg_color=INPUT_BG, hover_color=CARD_HOVER, text_color=TEXT,
         border_width=1, border_color=BORDER, corner_radius=8, font=font(13),
     )
     opts.update(kw)
     return ctk.CTkButton(master, **opts)
-

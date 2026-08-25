@@ -1,4 +1,4 @@
-"""Main application window: sidebar navigation + stacked pages."""
+"""Main application window: top global header navigation + spacious content canvas."""
 from __future__ import annotations
 
 import sys
@@ -25,16 +25,18 @@ class App(ctk.CTk):
         ctk.set_default_color_theme("blue")
 
         self.title(f"{__app_name__} v{__version__}")
-        self.geometry("1160x760")
-        self.minsize(980, 620)
+        self.geometry("1120x760")
+        self.minsize(960, 640)
         self.configure(fg_color=t.APP_BG)
 
         self._apply_window_icon()
 
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=0)  # Top Global Header
+        self.grid_rowconfigure(1, weight=1)  # Full Content Area
 
-        self._build_sidebar()
+        self._nav_buttons: dict[str, ctk.CTkButton] = {}
+        self._build_header()
         self._build_pages()
         self.select_page("Downloads")
 
@@ -69,93 +71,91 @@ class App(ctk.CTk):
         except Exception:
             pass
 
-    # -- sidebar ------------------------------------------------------------
-    def _build_sidebar(self):
-        bar = ctk.CTkFrame(self, width=t.SIDEBAR_W, corner_radius=0, fg_color=t.SIDEBAR_BG)
-        bar.grid(row=0, column=0, sticky="nsw")
-        bar.grid_propagate(False)
-        bar.grid_columnconfigure(0, weight=1)
-        bar.grid_rowconfigure(9, weight=1)
+    # -- top global header (Tukdify Clips signature architecture) -----------
+    def _build_header(self):
+        header_bar = ctk.CTkFrame(
+            self, height=56, corner_radius=0, fg_color=t.SIDEBAR_BG,
+            border_width=0,
+        )
+        header_bar.grid(row=0, column=0, sticky="ew")
+        header_bar.grid_propagate(False)
+        header_bar.grid_columnconfigure(1, weight=1)
 
-        # Brand: Metal Silver Falcon + Tukdify Wordmark
-        brand = ctk.CTkFrame(bar, fg_color="transparent")
-        brand.grid(row=0, column=0, padx=18, pady=(24, 2), sticky="w")
+        # 1. Left: Product Branding (Falcon + Tukdify Downloader · by Tukdify)
+        brand = ctk.CTkFrame(header_bar, fg_color="transparent")
+        brand.grid(row=0, column=0, padx=(18, 12), pady=8, sticky="w")
+
         self._logo_img = None
         fp = falcon_mark_path()
         if fp is not None:
             try:
-                self._logo_img = ctk.CTkImage(Image.open(fp), size=(24, 24))
+                self._logo_img = ctk.CTkImage(Image.open(fp), size=(22, 22))
                 ctk.CTkLabel(brand, image=self._logo_img, text="").pack(side="left", padx=(0, 8))
             except Exception:
                 self._logo_img = None
 
-        brand_text = ctk.CTkFrame(brand, fg_color="transparent")
-        brand_text.pack(side="left")
-        ctk.CTkLabel(brand_text, text="Tukdify", font=t.font(17, "bold"),
-                     text_color=t.TEXT).pack(anchor="w")
+        ctk.CTkLabel(brand, text="Tukdify Downloader", font=t.font(14, "bold"),
+                     text_color=t.TEXT).pack(side="left")
+        ctk.CTkLabel(brand, text=" · ", font=t.font(13, "bold"),
+                     text_color=t.TEXT_FAINT).pack(side="left")
+        ctk.CTkLabel(brand, text="by Tukdify", font=t.font(11),
+                     text_color=t.TEXT_MUTED).pack(side="left")
 
-        ctk.CTkLabel(bar, text="Video Downloader", font=t.font(12, "bold"),
-                     text_color=t.ACCENT).grid(row=1, column=0, padx=20, pady=(0, 2), sticky="w")
-        ctk.CTkLabel(bar, text="Fast · Private · Offline-first", font=t.font(11),
-                     text_color=t.TEXT_FAINT).grid(row=2, column=0, padx=20, pady=(0, 22), sticky="w")
+        # 2. Center: Segmented Navigation Pills
+        nav_container = ctk.CTkFrame(header_bar, fg_color="transparent")
+        nav_container.grid(row=0, column=1, pady=8, sticky="n")
 
-        self._nav_buttons: dict[str, ctk.CTkButton] = {}
-        
-        # Primary Pages
+        nav_pill_box = ctk.CTkFrame(
+            nav_container, fg_color=t.INPUT_BG, corner_radius=8,
+            border_width=1, border_color=t.BORDER,
+        )
+        nav_pill_box.pack(side="top")
+
         page_items = [
-            ("Downloads", "  Downloads", "⬇"),
-            ("History", "  History", "🕘"),
-            ("Settings", "  Settings", "⚙"),
+            ("Downloads", "Downloads", "⬇ "),
+            ("History", "History", "🕘 "),
+            ("Settings", "Settings", "⚙ "),
+            ("About", "About", "ℹ "),
         ]
-        for i, (key, label, icon) in enumerate(page_items, start=3):
+
+        for key, label, icon in page_items:
             btn = ctk.CTkButton(
-                bar, text=f"{icon}{label}", anchor="w", height=38, corner_radius=10,
-                fg_color="transparent", text_color=t.TEXT_MUTED,
-                hover_color=t.CARD_HOVER, font=t.font(13, "bold"),
+                nav_pill_box, text=f"{icon}{label}", height=32, width=105,
+                corner_radius=6, fg_color="transparent", text_color=t.TEXT_MUTED,
+                hover_color=t.CARD_HOVER, font=t.font(12, "bold"),
                 command=lambda k=key: self.select_page(k),
             )
-            btn.grid(row=i, column=0, padx=12, pady=3, sticky="ew")
+            btn.pack(side="left", padx=2, pady=2)
             self._nav_buttons[key] = btn
 
-        # Divider line
-        divider = ctk.CTkFrame(bar, height=1, fg_color=t.BORDER)
-        divider.grid(row=6, column=0, padx=16, pady=12, sticky="ew")
-
-        # Modals / Secondary Actions (Support & Follow)
-        self.support_btn = ctk.CTkButton(
-            bar, text="❤️  Support Tukdify", anchor="w", height=36, corner_radius=10,
-            fg_color="transparent", text_color=t.TEXT_MUTED,
-            hover_color=t.CARD_HOVER, font=t.font(12, "bold"),
-            command=lambda: SupportDialog(self),
-        )
-        self.support_btn.grid(row=7, column=0, padx=12, pady=2, sticky="ew")
+        # 3. Right: Utility Actions (Follow & Support)
+        actions = ctk.CTkFrame(header_bar, fg_color="transparent")
+        actions.grid(row=0, column=2, padx=(12, 18), pady=8, sticky="e")
 
         self.follow_btn = ctk.CTkButton(
-            bar, text="🌐  Connect / Follow", anchor="w", height=36, corner_radius=10,
-            fg_color="transparent", text_color=t.TEXT_MUTED,
-            hover_color=t.CARD_HOVER, font=t.font(12, "bold"),
+            actions, text="🌐  Follow", width=86, height=32, corner_radius=8,
+            fg_color=t.INPUT_BG, border_width=1, border_color=t.BORDER,
+            text_color=t.TEXT, hover_color=t.CARD_HOVER, font=t.font(12, "bold"),
             command=lambda: FollowDialog(self),
         )
-        self.follow_btn.grid(row=8, column=0, padx=12, pady=2, sticky="ew")
+        self.follow_btn.pack(side="left", padx=(0, 8))
 
-        # About page
-        self.about_btn = ctk.CTkButton(
-            bar, text="ℹ  About", anchor="w", height=36, corner_radius=10,
-            fg_color="transparent", text_color=t.TEXT_MUTED,
-            hover_color=t.CARD_HOVER, font=t.font(12),
-            command=lambda: self.select_page("About"),
+        self.support_btn = ctk.CTkButton(
+            actions, text="❤️  Support", width=92, height=32, corner_radius=8,
+            fg_color=t.ACCENT_SOFT, border_width=1, border_color=t.BORDER,
+            text_color=t.TEXT, hover_color=t.ACCENT, font=t.font(12, "bold"),
+            command=lambda: SupportDialog(self),
         )
-        self.about_btn.grid(row=9, column=0, padx=12, pady=(2, 0), sticky="new")
-        self._nav_buttons["About"] = self.about_btn
+        self.support_btn.pack(side="left")
 
-        ctk.CTkLabel(bar, text=f"v{__version__} · Tukdify Suite", font=t.font(10),
-                     text_color=t.TEXT_FAINT).grid(row=10, column=0, padx=20, pady=14,
-                                                   sticky="sw")
+        # Bottom subtle separator line
+        sep = ctk.CTkFrame(self, height=1, fg_color=t.BORDER, corner_radius=0)
+        sep.grid(row=0, column=0, sticky="sew")
 
     # -- pages --------------------------------------------------------------
     def _build_pages(self):
         container = ctk.CTkFrame(self, corner_radius=0, fg_color=t.APP_BG)
-        container.grid(row=0, column=1, sticky="nsew")
+        container.grid(row=1, column=0, sticky="nsew")
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
@@ -172,9 +172,9 @@ class App(ctk.CTk):
         for k, btn in self._nav_buttons.items():
             active = k == key
             btn.configure(
-                fg_color=t.ACCENT_SOFT if active else "transparent",
-                text_color=t.ACCENT if active else t.TEXT_MUTED,
-                hover_color=t.ACCENT_SOFT if active else t.CARD_HOVER,
+                fg_color=t.ACCENT if active else "transparent",
+                text_color="#ffffff" if active else t.TEXT_MUTED,
+                hover_color=t.ACCENT_HOVER if active else t.CARD_HOVER,
             )
         page = self.pages[key]
         if hasattr(page, "on_show"):
@@ -195,4 +195,3 @@ class App(ctk.CTk):
 
 def run():
     App().mainloop()
-

@@ -78,7 +78,7 @@ class AboutPage(ctk.CTkFrame):
                          command=lambda: SupportDialog(self)).grid(row=0, column=0, padx=12, pady=14, sticky="ew")
         t.cyan_button(actions_card, text="🌐  Connect & Follow", height=38,
                       command=lambda: FollowDialog(self)).grid(row=0, column=1, padx=12, pady=14, sticky="ew")
-        t.ghost_button(actions_card, text="⭐  GitHub Repo", height=38,
-                       command=lambda: webbrowser.open("https://github.com/Tukdify/Tukdify-Video-Downloader")
+        t.ghost_button(actions_card, text="⭐  GitHub Hub", height=38,
+                       command=lambda: webbrowser.open("https://github.com/Tukdify")
                        ).grid(row=0, column=2, padx=12, pady=14, sticky="ew")
 

@@ -318,8 +318,11 @@ class DownloadsPage(ctk.CTkFrame):
         self.info_title.configure(text="Analyzing media streams…")
         self.info_channel.configure(text="")
         self.info_meta.configure(text="")
-        self.thumb_lbl.configure(image=None, text="")
         self._thumb_img = None
+        try:
+            self.thumb_lbl.configure(image=None, text="", fg_color=t.INPUT_BG)
+        except Exception:
+            pass
 
         def work():
             try:
@@ -356,15 +359,18 @@ class DownloadsPage(ctk.CTkFrame):
         top = (img.height - th) // 2
         img = img.crop((left, top, left + tw, top + th))
         mask = Image.new("L", size, 0)
-        ImageDraw.Draw(mask).rounded_rectangle([0, 0, tw - 1, th - 1], radius=10, fill=255)
+        ImageDraw.Draw(mask).rounded_rectangle([0, 0, tw - 1, th - 1], radius=8, fill=255)
         img.putalpha(mask)
         return img
 
     def _set_thumb(self, img, token: int):
         if token != self._info_token:
             return
-        self._thumb_img = ctk.CTkImage(light_image=img, dark_image=img, size=THUMB_SIZE)
-        self.thumb_lbl.configure(image=self._thumb_img, text="", fg_color="transparent")
+        try:
+            self._thumb_img = ctk.CTkImage(light_image=img, dark_image=img, size=THUMB_SIZE)
+            self.thumb_lbl.configure(image=self._thumb_img, text="", fg_color="transparent")
+        except Exception:
+            pass
 
     def _show_info(self, info: MediaInfo, token: int):
         if token != self._info_token:
@@ -578,10 +584,10 @@ class JobCard(ctk.CTkFrame):
         reveal_in_file_manager(self.job.filepath or self.job.download_dir)
 
     def _open_in_clips(self):
-        webbrowser.open("https://github.com/tukdify/Tukdify-clips")
+        webbrowser.open("https://github.com/Tukdify/Tukdify-clips")
 
     def _open_in_multicompressor(self):
-        webbrowser.open("https://github.com/Tukdify")
+        webbrowser.open("https://github.com/Tukdify/Tukdify-Multicompressor")
 
 
 class PlaylistPickerModal(ctk.CTkToplevel):
@@ -596,10 +602,18 @@ class PlaylistPickerModal(ctk.CTkToplevel):
         self.configure(fg_color=t.APP_BG)
         self.attributes("-topmost", True)
         self.transient(master)
-        self.grab_set()
+        self.after(50, self._safe_focus_and_grab)
 
         self._checks: list[tuple[dict, ctk.BooleanVar]] = []
         self._build_ui()
+
+    def _safe_focus_and_grab(self):
+        try:
+            if self.winfo_exists():
+                self.focus()
+                self.grab_set()
+        except Exception:
+            pass
 
     def _build_ui(self):
         header = ctk.CTkFrame(self, fg_color="transparent")
@@ -607,7 +621,7 @@ class PlaylistPickerModal(ctk.CTkToplevel):
         ctk.CTkLabel(header, text=self.info.title, font=t.font(16, "bold"),
                      text_color=t.TEXT).pack(anchor="w")
         ctk.CTkLabel(header, text=f"{self.info.entry_count} Videos found in playlist",
-                     font=t.font(12), text_color=t.CYAN).pack(anchor="w")
+                     font=t.font(12, "bold"), text_color=t.ACCENT).pack(anchor="w")
 
         # Toolbar
         bar = ctk.CTkFrame(self, fg_color="transparent")

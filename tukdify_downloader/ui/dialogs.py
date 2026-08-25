@@ -15,9 +15,11 @@ from PIL import Image
 from ..config import support_asset
 from . import theme as t
 
-# Verified Official and Community Channels from Tukdify Clips
+# Verified Official and Community Channels from Tukdify Ecosystem
 OFFICIAL_CHANNELS = [
-    ("GitHub", "Tukdify Repository", "https://github.com/Tukdify/Tukdify-Video-Downloader", "⭐"),
+    ("GitHub", "Tukdify Organization", "https://github.com/Tukdify", "⭐"),
+    ("Tukdify Clips", "AI Long-to-Shorts Studio", "https://github.com/Tukdify/Tukdify-clips", "🎬"),
+    ("Multicompressor", "Batch Media Optimizer", "https://github.com/Tukdify/Tukdify-Multicompressor", "⚡"),
     ("X (Twitter)", "@tukdify", "https://x.com/tukdify", "𝕏"),
     ("YouTube", "@tukdify", "https://youtube.com/@tukdify?si=v3gFBp33pqPuCdxl", "▶"),
     ("Instagram", "@tukdi_fy", "https://www.instagram.com/tukdi_fy/", "📸"),
@@ -162,12 +164,20 @@ class SupportDialog(ctk.CTkToplevel):
         self.configure(fg_color=t.APP_BG)
         self.attributes("-topmost", True)
         self.transient(master)
-        self.grab_set()
+        self.after(50, self._safe_focus_and_grab)
 
         self._upi_img = None
         self._binance_img = None
 
         self._build_ui()
+
+    def _safe_focus_and_grab(self):
+        try:
+            if self.winfo_exists():
+                self.focus()
+                self.grab_set()
+        except Exception:
+            pass
 
     def _build_ui(self):
         # Header
@@ -269,9 +279,17 @@ class FollowDialog(ctk.CTkToplevel):
         self.configure(fg_color=t.APP_BG)
         self.attributes("-topmost", True)
         self.transient(master)
-        self.grab_set()
+        self.after(50, self._safe_focus_and_grab)
 
         self._build_ui()
+
+    def _safe_focus_and_grab(self):
+        try:
+            if self.winfo_exists():
+                self.focus()
+                self.grab_set()
+        except Exception:
+            pass
 
     def _build_ui(self):
         header = ctk.CTkFrame(self, fg_color="transparent")
