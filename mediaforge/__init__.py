@@ -1,4 +1,6 @@
-"""MediaForge - a free, offline, multi-platform media downloader."""
-
-__version__ = "1.1.0"
-__app_name__ = "MediaForge"
+"""Backward-compatibility shim for MediaForge -> Tukdify Video Downloader."""
+from __future__ import annotations
+import sys
+import tukdify_downloader
+sys.modules["mediaforge"] = tukdify_downloader
+from tukdify_downloader import *

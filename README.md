@@ -1,89 +1,75 @@
 <p align="center">
-  <img src="assets/logo.png" alt="MediaForge" width="180">
+  <img src="assets/branding/tukdify_falcon_256.png" alt="Tukdify Falcon" width="128">
 </p>
 
-<h1 align="center">MediaForge</h1>
-<p align="center"><em>Download · Save · Create</em></p>
+<h1 align="center">Tukdify Video Downloader</h1>
+<p align="center"><strong>Universal 4K & MP3 Media Ingestion for Creators & Editors</strong></p>
 
-**Free, offline, ad-free media downloader for Windows.**
-Download video, audio (MP3), thumbnails and subtitles from YouTube and many
-other sites — no login, no ads, no tracking.
-
-> Built with Python · yt-dlp · ffmpeg · CustomTkinter · PyInstaller
-
----
-
-## ✨ Features (v1.0)
-
-- 🔗 Paste any link — **auto-detects the platform** (YouTube, Shorts, Instagram, TikTok, X, Reddit, …)
-- 🔍 **Info preview** — title, channel, duration, views before you download
-- ⬇️ **Video** (Best / 1080p / 720p / 480p / 360p) or **MP3** audio
-- 🖼️ Optional **thumbnail** and **subtitle** download
-- 📃 Whole-**playlist** download
-- 📋 **Download queue** with live progress, speed & ETA, plus **Cancel**
-- 🗂️ **History** of past downloads
-- ⚙️ **Settings**: default folder, dark/light theme, quality, file naming
-- 📦 Single `.exe`, **ffmpeg bundled inside** — nothing else to install
-
-> **Note:** MediaForge will **not** download DRM-protected or paid content
-> (YouTube Movies, Premium-exclusive, etc.) — that's technically impossible and
-> against the rules. Only content you're allowed to access.
+<p align="center">
+  <img src="https://img.shields.io/badge/version-2.0.0-blue.svg?style=flat-square" alt="Version 2.0.0">
+  <img src="https://img.shields.io/badge/ecosystem-Tukdify%20Suite-8B5CF6.svg?style=flat-square" alt="Tukdify Suite">
+  <img src="https://img.shields.io/badge/license-MIT-emerald.svg?style=flat-square" alt="License">
+  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-cyan.svg?style=flat-square" alt="Platforms">
+</p>
 
 ---
 
-## 📥 For users (download & run)
+## 🦅 Overview
+
+**Tukdify Video Downloader** is a high-performance desktop media utility engineered for creators, video editors, and archivists. Built with Python, CustomTkinter, and yt-dlp, it provides a fast, private, offline-first workflow for downloading 4K video, 320kbps MP3 audio, cover art, and subtitles across 1,000+ platforms.
+
+Part of the **Tukdify Creator Ecosystem**:
+- 🎬 **[Tukdify Clips](https://github.com/tukdify/Tukdify-clips)** — AI Long-Form to Viral Shorts Studio
+- ⬇️ **[Tukdify Video Downloader](https://github.com/Tukdify/Tukdify-Video-Downloader)** — Universal 4K & MP3 Ingestion
+- ⚡ **[Tukdify Multicompressor](https://github.com/Tukdify)** — GPU-Accelerated Media Optimizer
+
+---
+
+## ⚡ Key Features (v2.0.0)
+
+- 🎯 **Streamlined 4-Step Canvas:** Paste URL → Automatic Stream Analysis → Choose Format → Download.
+- 📺 **4K & High-Bitrate Audio:** One-click presets for `Best Video (4K/1440p)`, `1080p Full HD`, and `MP3 Audio (320k)`.
+- 📁 **Interactive Playlist Picker:** Inspect and select individual videos from multi-item playlists before downloading.
+- 🎛️ **Collapsible Advanced Drawer:** Granular controls for resolution override, subtitle language selection, metadata embedding, and save folders.
+- 🔍 **Searchable History:** Instant keyword search, platform filtering pills, file size indicators, and safe single-item management.
+- 🛡️ **Zero Tracking & Local-First:** No accounts, no telemetry, and no DRM bypass. All processing occurs locally on your machine.
+- 📦 **Single Standalone Executable:** Windows executable bundles FFmpeg 7.1 essentials — zero external setup needed.
+
+---
+
+## 📥 Download & Run (Windows)
 
 1. Go to the **[Releases](../../releases/latest)** page.
-2. Download **`MediaForge.exe`**.
-3. Double-click it. That's it — no installation.
-
-> Windows SmartScreen may warn about an "unknown publisher" (normal for
-> unsigned indie apps) — click **More info → Run anyway**.
+2. Download **`Tukdify-Video-Downloader.exe`**.
+3. Double-click to launch — completely portable with zero installation required.
 
 ---
 
-## 🛠️ For developers (run from source)
+## 🛠️ Development & Source Setup
 
 ```bash
-git clone <your-repo-url>
-cd MediaForge
+git clone https://github.com/Tukdify/Tukdify-Video-Downloader.git
+cd Tukdify-Video-Downloader
 python -m venv .venv
-# Windows:  .venv\Scripts\activate     | Linux/Mac:  source .venv/bin/activate
+source .venv/bin/activate  # Or on Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 python main.py
 ```
 
-`ffmpeg` must be on your PATH for 1080p merging / MP3 when running from source.
+### Running Test Suite
+
+```bash
+PYTHONPATH=. pytest -v
+```
+
+### Running Offline UI Self-Test
+
+```bash
+python main.py --selftest
+```
 
 ---
 
-## 🏗️ How the Windows `.exe` is built
+## ⚖️ Legal Notice
 
-You develop on any OS, but the `.exe` is built automatically by **GitHub
-Actions** on a Windows runner — see [`.github/workflows/build-windows.yml`](.github/workflows/build-windows.yml).
-
-- Builds on every push to `main`, on manual trigger, **and weekly**.
-- Each build installs the **newest yt-dlp**, so releases never go stale when
-  sites change.
-- Publishes `MediaForge.exe` to the `latest` release automatically.
-
-To build manually on a Windows machine instead, drop `ffmpeg.exe` + `ffprobe.exe`
-next to `build.bat` and run it.
-
----
-
-## 🗺️ Roadmap
-
-- **v1.0** — MVP: video/MP3, quality, queue, progress, history, settings ✅
-- **v1.5** — pause/resume, more naming options, batch paste
-- **v2.0** — richer multi-platform UX, format chooser
-- **v3.0** — dashboard, analytics, custom icon & polish
-- **Creator Edition** — subtitle/metadata export toolkit
-
----
-
-## ⚖️ Legal
-
-For personal use. Respect copyright and each platform's Terms of Service.
-Don't download content you don't have the right to. MediaForge does not and
-will not circumvent DRM or paywalls.
+For personal, authorized archiving and workflow use. Please respect copyright and individual platform Terms of Service. Tukdify does not circumvent DRM or access paid/encrypted media.

@@ -1,6 +1,6 @@
 @echo off
 REM ---------------------------------------------------------------------------
-REM  Build MediaForge.exe locally on Windows.
+REM  Build Tukdify-Video-Downloader.exe locally on Windows.
 REM  (You normally don't need this - GitHub Actions builds it for you. Use this
 REM   only if you want to build on your own Windows machine.)
 REM
@@ -15,12 +15,12 @@ call .venv\Scripts\activate.bat
 
 echo [2/4] Installing dependencies (newest yt-dlp)...
 python -m pip install --upgrade pip
-pip install -U yt-dlp customtkinter pyinstaller
+pip install -U yt-dlp customtkinter pyinstaller Pillow
 
 echo [3/4] Checking for ffmpeg...
 if not exist ffmpeg.exe (
   echo   WARNING: ffmpeg.exe not found next to build.bat.
-  echo   1080p merging and MP3 will not work without it.
+  echo   1080p/4K stream merging and MP3 extraction will not work without it.
 )
 
 echo [4/4] Building EXE...
@@ -28,7 +28,7 @@ set ICON=
 if exist assets\icon.ico set ICON=--icon assets\icon.ico
 
 pyinstaller --noconfirm --onefile --windowed ^
-  --name MediaForge ^
+  --name Tukdify-Video-Downloader ^
   --version-file version_info.txt ^
   --collect-all customtkinter ^
   --add-data "assets;assets" ^
@@ -38,6 +38,6 @@ pyinstaller --noconfirm --onefile --windowed ^
   main.py
 
 echo.
-echo Done. Your app is at: dist\MediaForge.exe
+echo Done. Your app is at: dist\Tukdify-Video-Downloader.exe
 endlocal
 pause

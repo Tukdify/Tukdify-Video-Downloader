@@ -1,10 +1,10 @@
-# PyInstaller version resource for MediaForge.exe
+# PyInstaller version resource for Tukdify-Video-Downloader.exe
 # Embedded into the Windows executable so right-click > Properties > Details
 # shows proper ownership. Referenced by the build via --version-file.
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 1, 0, 0),
-    prodvers=(1, 1, 0, 0),
+    filevers=(2, 0, 0, 0),
+    prodvers=(2, 0, 0, 0),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -18,14 +18,14 @@ VSVersionInfo(
         StringTable(
           '040904B0',
           [
-            StringStruct('CompanyName', 'Sourabh Jangid'),
-            StringStruct('FileDescription', 'Multi-platform media downloader'),
-            StringStruct('FileVersion', '1.1.0.0'),
-            StringStruct('InternalName', 'MediaForge'),
-            StringStruct('LegalCopyright', '© 2026 Sourabh Jangid'),
-            StringStruct('OriginalFilename', 'MediaForge.exe'),
-            StringStruct('ProductName', 'MediaForge'),
-            StringStruct('ProductVersion', '1.1.0.0'),
+            StringStruct('CompanyName', 'Tukdify'),
+            StringStruct('FileDescription', 'Tukdify Video Downloader - Universal 4K & MP3 Media Ingestion'),
+            StringStruct('FileVersion', '2.0.0.0'),
+            StringStruct('InternalName', 'TukdifyDownloader'),
+            StringStruct('LegalCopyright', '© 2026 Tukdify. All rights reserved.'),
+            StringStruct('OriginalFilename', 'Tukdify-Video-Downloader.exe'),
+            StringStruct('ProductName', 'Tukdify Video Downloader'),
+            StringStruct('ProductVersion', '2.0.0.0'),
           ],
         )
       ]

@@ -1,15 +1,14 @@
 name: Build Windows EXE
 
-# Builds MediaForge.exe on a Windows runner (you develop on Linux; GitHub
-# produces the .exe). Dependency versions (yt-dlp, ffmpeg) are pinned for
-# reproducible builds — bump them deliberately, then push to rebuild.
+# Builds Tukdify-Video-Downloader.exe on a Windows runner.
+# Dependency versions (yt-dlp, ffmpeg) are pinned for reproducible builds.
 on:
   push:
     branches: [main]
-  workflow_dispatch:        # lets you trigger a build manually from the Actions tab
+  workflow_dispatch:
 
 permissions:
-  contents: write           # needed to publish the release
+  contents: write
 
 jobs:
   build:
@@ -23,7 +22,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install dependencies (pinned)
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -47,7 +46,7 @@ jobs:
           $iconArg = @()
           if (Test-Path "assets/icon.ico") { $iconArg = @("--icon", "assets/icon.ico") }
           pyinstaller --noconfirm --onefile --windowed `
-            --name MediaForge `
+            --name Tukdify-Video-Downloader `
             --version-file version_info.txt `
             --collect-all customtkinter `
             --add-data "assets;assets" `
@@ -59,12 +58,9 @@ jobs:
       - name: Smoke-test the built EXE (does it launch?)
         shell: pwsh
         run: |
-          # Runs the packaged app in --selftest mode: it builds the full window,
-          # renders every page, then exits 0. Proves the .exe actually launches
-          # with all dependencies + ffmpeg bundled correctly.
-          $p = Start-Process -FilePath "dist/MediaForge.exe" -ArgumentList "--selftest" -PassThru -Wait
+          $p = Start-Process -FilePath "dist/Tukdify-Video-Downloader.exe" -ArgumentList "--selftest" -PassThru -Wait
           if ($p.ExitCode -ne 0) {
-            Write-Error "MediaForge.exe self-test failed (exit code $($p.ExitCode))"
+            Write-Error "Tukdify-Video-Downloader.exe self-test failed (exit code $($p.ExitCode))"
             exit 1
           }
           Write-Host "EXE launched and self-test passed."
@@ -72,20 +68,19 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MediaForge-windows
-          path: dist/MediaForge.exe
+          name: Tukdify-Video-Downloader-windows
+          path: dist/Tukdify-Video-Downloader.exe
 
-      # Publish to a stable "latest" release so friends always get the fresh build.
       - name: Publish latest release
         if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
-          name: MediaForge (latest build)
+          name: Tukdify Video Downloader v2.0.0
           body: |
-            Automated Windows build of MediaForge.
-            yt-dlp was updated to the newest version at build time, so site
-            support is current as of this build's date.
+            Automated Windows release of **Tukdify Video Downloader v2.0.0**.
+            Universal 4K & MP3 Media Ingestion for the Tukdify Ecosystem.
 
-            **Download:** `MediaForge.exe` below — no install needed, just run it.
-          files: dist/MediaForge.exe
+            • **Portable Executable:** Download `Tukdify-Video-Downloader.exe` below — no installer or admin rights required.
+            • **Bundled FFmpeg:** Pre-packaged with FFmpeg 7.1 essentials.
+          files: dist/Tukdify-Video-Downloader.exe
