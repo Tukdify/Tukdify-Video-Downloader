@@ -5,6 +5,24 @@ All notable changes to **Tukdify Video Downloader** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] — 2026-08-26
+
+Windows packaging, shell integration, and branding polish release.
+
+### Added
+- **Windows Inno Setup Installer:** Added official Windows Setup installer (`Tukdify-Video-Downloader-Setup-2.0.1.exe`) matching Tukdify Clips packaging standards.
+- **Start Menu & Desktop Shortcuts:** Installer provisions Start Menu (`Tukdify Video Downloader`) and optional Desktop shortcuts with the canonical Falcon icon.
+- **Add/Remove Programs Integration:** Registered Windows uninstaller with clean cleanup while preserving user downloads and `%APPDATA%` settings.
+- **Dual Windows Distribution:** Releases officially provide both the Setup Installer (`Tukdify-Video-Downloader-Setup-2.0.1.exe`) and Standalone Portable executable (`Tukdify-Video-Downloader.exe`) along with `SHA256SUMS.txt`.
+- **PyInstaller Specification:** Added `tukdify.spec` for deterministic, repeatable builds.
+- **Packaging Test Suite:** Added `test_packaging_branding.py` to continuously verify canonical icon hashes, PE version metadata, Inno Setup configurations, and AppUserModelID.
+
+### Fixed
+- **Explorer Preview & Shell Identity:** Purged legacy MediaForge assets (`assets/logo.png` and legacy tree) and updated Windows AppUserModelID to stable `Tukdify.VideoDownloader`.
+- **Windows PE Version Metadata:** Updated executable metadata resource to `v2.0.1.0` with full publisher and product attribution.
+
+---
+
 ## [2.0.0] — 2026-08-25
 
 Major re-architecture and complete rebranding into the **Tukdify Creator Ecosystem**.
@@ -41,6 +59,7 @@ A UI/UX-focused release.
 
 Initial release.
 
+[2.0.1]: https://github.com/Tukdify/Tukdify-Video-Downloader/releases/tag/v2.0.1
 [2.0.0]: https://github.com/Tukdify/Tukdify-Video-Downloader/releases/tag/v2.0.0
 [1.1.0]: https://github.com/Tukdify/Tukdify-Video-Downloader/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Tukdify/Tukdify-Video-Downloader/releases/tag/v1.0.0

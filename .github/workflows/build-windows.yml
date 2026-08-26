@@ -1,7 +1,9 @@
-name: Build Windows EXE
+name: Build Windows (Tukdify Video Downloader)
 
-# Builds Tukdify-Video-Downloader.exe on a Windows runner.
-# Dependency versions (yt-dlp, ffmpeg) are pinned for reproducible builds.
+# Produces Windows standalone executable & Inno Setup installer for Tukdify Video Downloader.
+# Bundles ffmpeg/ffprobe 7.1 essentials for stream merging and MP3 extraction.
+# Runs unit tests, PyInstaller build, Inno Setup compilation, and live smoke tests.
+
 on:
   push:
     branches: [main]
@@ -13,20 +15,25 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.12 (x64)
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          architecture: x64
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pyinstaller
+          pip install pyinstaller==6.11.1 pytest pefile Pillow
+
+      - name: Run unit & packaging tests
+        run: pytest
 
       - name: Download ffmpeg + ffprobe (pinned 7.1)
         shell: pwsh
@@ -40,22 +47,10 @@ jobs:
           Copy-Item $ffprobe.FullName -Destination ffprobe.exe
           Write-Host "Bundled:" (Get-Item ffmpeg.exe).Length "bytes ffmpeg"
 
-      - name: Build EXE
-        shell: pwsh
-        run: |
-          $iconArg = @()
-          if (Test-Path "assets/tukdify.ico") { $iconArg = @("--icon", "assets/tukdify.ico") }
-          pyinstaller --noconfirm --onefile --windowed `
-            --name Tukdify-Video-Downloader `
-            --version-file version_info.txt `
-            --collect-all customtkinter `
-            --add-data "assets;assets" `
-            --add-binary "ffmpeg.exe;." `
-            --add-binary "ffprobe.exe;." `
-            @iconArg `
-            main.py
+      - name: Build Standalone EXE (PyInstaller)
+        run: pyinstaller tukdify.spec --noconfirm --clean
 
-      - name: Smoke-test the built EXE (does it launch?)
+      - name: Smoke-test the built EXE
         shell: pwsh
         run: |
           $p = Start-Process -FilePath "dist/Tukdify-Video-Downloader.exe" -ArgumentList "--selftest" -PassThru -Wait
@@ -63,24 +58,83 @@ jobs:
             Write-Error "Tukdify-Video-Downloader.exe self-test failed (exit code $($p.ExitCode))"
             exit 1
           }
-          Write-Host "EXE launched and self-test passed."
+          Write-Host "OK: Built portable EXE launched and self-test passed."
 
-      - name: Upload build artifact
+      - name: Build Windows Installer (Inno Setup)
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { $iscc = "${env:ProgramFiles}\Inno Setup 6\ISCC.exe" }
+          if (-not (Test-Path $iscc)) { throw "ISCC.exe not found" }
+          & $iscc installer\tukdify.iss
+          if ($LASTEXITCODE -ne 0) { throw "ISCC failed with exit code $LASTEXITCODE" }
+          $setup = Get-ChildItem installer\Output\Tukdify-Video-Downloader-Setup-*.exe | Select-Object -First 1
+          if (-not $setup) { throw "Installer exe not produced" }
+          Write-Host "OK: built $($setup.Name) ($([math]::Round($setup.Length/1MB)) MB)"
+
+      - name: Smoke-test installed application
+        shell: pwsh
+        run: |
+          $setup = (Get-ChildItem installer\Output\Tukdify-Video-Downloader-Setup-*.exe | Select-Object -First 1).FullName
+          & $setup /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /LOG=install.log | Out-Null
+          Start-Sleep -Seconds 5
+          Get-Process -Name "Tukdify-Video-Downloader-Setup*" -ErrorAction SilentlyContinue | Wait-Process -Timeout 600 -ErrorAction SilentlyContinue
+          $exe = Join-Path $env:LOCALAPPDATA "Programs\Tukdify Video Downloader\Tukdify-Video-Downloader.exe"
+          if (-not (Test-Path $exe)) {
+            Get-Content install.log -Tail 40
+            throw "Installed exe not found at $exe"
+          }
+          $p = Start-Process -FilePath $exe -ArgumentList "--selftest" -PassThru -Wait
+          if ($p.ExitCode -ne 0) {
+            throw "Installed EXE self-test failed with exit code $($p.ExitCode)"
+          }
+          Write-Host "OK: Installed EXE launched and passed self-test."
+
+      - name: Generate SHA-256 Release Checksums
+        shell: pwsh
+        run: |
+          $portable = "dist/Tukdify-Video-Downloader.exe"
+          $setup = (Get-ChildItem installer\Output\Tukdify-Video-Downloader-Setup-*.exe | Select-Object -First 1).FullName
+          if (-not (Test-Path $portable)) { throw "Missing release artifact: $portable" }
+          if (-not (Test-Path $setup)) { throw "Missing release artifact: $setup" }
+
+          $hPort = (Get-FileHash -Path $portable -Algorithm SHA256).Hash.ToLower()
+          $hSetup = (Get-FileHash -Path $setup -Algorithm SHA256).Hash.ToLower()
+          $portName = (Get-Item $portable).Name
+          $setupName = (Get-Item $setup).Name
+
+          $lines = @(
+            "$hSetup  $setupName",
+            "$hPort  $portName"
+          )
+          $lines | Out-File -FilePath SHA256SUMS.txt -Encoding ascii
+          Write-Host "=== SHA-256 Release Checksums ==="
+          Get-Content SHA256SUMS.txt
+
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Tukdify-Video-Downloader-windows
-          path: dist/Tukdify-Video-Downloader.exe
+          name: Tukdify-Video-Downloader-windows-v2.0.1
+          path: |
+            dist/Tukdify-Video-Downloader.exe
+            installer/Output/Tukdify-Video-Downloader-Setup-*.exe
+            SHA256SUMS.txt
 
       - name: Publish latest release
         if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
-          name: Tukdify Video Downloader v2.0.0
+          tag_name: v2.0.1
+          name: Tukdify Video Downloader v2.0.1
           body: |
-            Automated Windows release of **Tukdify Video Downloader v2.0.0**.
+            Automated Windows release of **Tukdify Video Downloader v2.0.1**.
             Universal 4K & MP3 Media Ingestion for the Tukdify Ecosystem.
 
-            • **Portable Executable:** Download `Tukdify-Video-Downloader.exe` below — no installer or admin rights required.
+            ### Downloads
+            • **Windows Installer (Recommended):** `Tukdify-Video-Downloader-Setup-2.0.1.exe` — includes Desktop & Start Menu shortcuts and clean uninstaller.
+            • **Standalone Portable EXE:** `Tukdify-Video-Downloader.exe` — single-file portable binary, no installation required.
             • **Bundled FFmpeg:** Pre-packaged with FFmpeg 7.1 essentials.
-          files: dist/Tukdify-Video-Downloader.exe
+          files: |
+            installer/Output/Tukdify-Video-Downloader-Setup-*.exe
+            dist/Tukdify-Video-Downloader.exe
+            SHA256SUMS.txt

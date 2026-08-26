@@ -3,8 +3,8 @@
 # shows proper ownership. Referenced by the build via --version-file.
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(2, 0, 0, 0),
-    prodvers=(2, 0, 0, 0),
+    filevers=(2, 0, 1, 0),
+    prodvers=(2, 0, 1, 0),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -19,13 +19,13 @@ VSVersionInfo(
           '040904B0',
           [
             StringStruct('CompanyName', 'Tukdify'),
-            StringStruct('FileDescription', 'Tukdify Video Downloader - Universal 4K & MP3 Media Ingestion'),
-            StringStruct('FileVersion', '2.0.0.0'),
+            StringStruct('FileDescription', 'Tukdify Video Downloader'),
+            StringStruct('FileVersion', '2.0.1.0'),
             StringStruct('InternalName', 'TukdifyDownloader'),
             StringStruct('LegalCopyright', '© 2026 Tukdify. All rights reserved.'),
             StringStruct('OriginalFilename', 'Tukdify-Video-Downloader.exe'),
             StringStruct('ProductName', 'Tukdify Video Downloader'),
-            StringStruct('ProductVersion', '2.0.0.0'),
+            StringStruct('ProductVersion', '2.0.1.0'),
           ],
         )
       ]

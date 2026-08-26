@@ -62,17 +62,31 @@ def test_old_mediaforge_icon_not_present_or_used():
     root = resource_dir()
     old_ico = root / "assets" / "icon.ico"
     assert not old_ico.exists(), "Old MediaForge assets/icon.ico should not exist in repository"
+    old_logo = root / "assets" / "logo.png"
+    assert not old_logo.exists(), "Old MediaForge assets/logo.png should not exist in repository"
 
-    # Verify build workflow uses tukdify.ico and does not reference old icon.ico
+    # Verify build workflow does not reference old icon.ico or logo.png
     workflow_file = root / ".github" / "workflows" / "build-windows.yml"
     assert workflow_file.exists()
     wf_text = workflow_file.read_text(encoding="utf-8")
-    assert "assets/tukdify.ico" in wf_text
-    assert "assets/icon.ico" not in wf_text
+    assert "assets/icon.ico" not in wf_text and "assets/logo.png" not in wf_text
 
-    # Verify build.bat uses tukdify.ico and does not reference old icon.ico
+    # Verify tukdify.spec uses tukdify.ico
+    spec_file = root / "tukdify.spec"
+    assert spec_file.exists()
+    spec_text = spec_file.read_text(encoding="utf-8")
+    assert "assets/tukdify.ico" in spec_text
+    assert "icon.ico" not in spec_text and "logo.png" not in spec_text
+
+    # Verify installer/tukdify.iss uses tukdify.ico
+    iss_file = root / "installer" / "tukdify.iss"
+    assert iss_file.exists()
+    iss_text = iss_file.read_text(encoding="utf-8")
+    assert "assets\\tukdify.ico" in iss_text or "assets/tukdify.ico" in iss_text
+    assert "icon.ico" not in iss_text and "logo.png" not in iss_text
+
+    # Verify build.bat does not reference old icon.ico
     bat_file = root / "build.bat"
     assert bat_file.exists()
     bat_text = bat_file.read_text(encoding="utf-8")
-    assert "assets\\tukdify.ico" in bat_text or "assets/tukdify.ico" in bat_text
     assert "assets\\icon.ico" not in bat_text and "assets/icon.ico" not in bat_text
