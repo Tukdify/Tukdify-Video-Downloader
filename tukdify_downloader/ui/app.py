@@ -47,7 +47,7 @@ class App(ctk.CTk):
         if sys.platform == "win32":
             try:
                 import ctypes
-                ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("tukdify.videodownloader.2.0")
+                ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("Tukdify.VideoDownloader")
             except Exception:
                 pass
 

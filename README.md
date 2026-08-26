@@ -6,7 +6,7 @@
 <p align="center"><strong>Universal 4K & MP3 Media Ingestion for Creators & Editors</strong></p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.0.0-blue.svg?style=flat-square" alt="Version 2.0.0">
+  <img src="https://img.shields.io/badge/version-2.0.1-blue.svg?style=flat-square" alt="Version 2.0.1">
   <img src="https://img.shields.io/badge/ecosystem-Tukdify%20Suite-8B5CF6.svg?style=flat-square" alt="Tukdify Suite">
   <img src="https://img.shields.io/badge/license-MIT-emerald.svg?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-cyan.svg?style=flat-square" alt="Platforms">
@@ -25,7 +25,7 @@ Part of the **Tukdify Creator Ecosystem**:
 
 ---
 
-## ⚡ Key Features (v2.0.0)
+## ⚡ Key Features (v2.0.1)
 
 - 🎯 **Streamlined 4-Step Canvas:** Paste URL → Automatic Stream Analysis → Choose Format → Download.
 - 📺 **4K & High-Bitrate Audio:** One-click presets for `Best Video (4K/1440p)`, `1080p Full HD`, and `MP3 Audio (320k)`.
@@ -33,15 +33,22 @@ Part of the **Tukdify Creator Ecosystem**:
 - 🎛️ **Collapsible Advanced Drawer:** Granular controls for resolution override, subtitle language selection, metadata embedding, and save folders.
 - 🔍 **Searchable History:** Instant keyword search, platform filtering pills, file size indicators, and safe single-item management.
 - 🛡️ **Zero Tracking & Local-First:** No accounts, no telemetry, and no DRM bypass. All processing occurs locally on your machine.
-- 📦 **Single Standalone Executable:** Windows executable bundles FFmpeg 7.1 essentials — zero external setup needed.
+- 📦 **Dual Windows Distribution:** Available as both an official Inno Setup installer (with Start Menu & Desktop shortcuts) and a standalone portable EXE.
 
 ---
 
-## 📥 Download & Run (Windows)
+## 📥 Download & Install (Windows)
 
-1. Go to the **[Releases](../../releases/latest)** page.
-2. Download **`Tukdify-Video-Downloader.exe`**.
-3. Double-click to launch — completely portable with zero installation required.
+Visit the **[Releases](../../releases/latest)** page to download:
+
+- **Windows Installer (Recommended):** `Tukdify-Video-Downloader-Setup-2.0.1.exe`
+  - Installs to standard per-user application folder (`%LOCALAPPDATA%\Programs\Tukdify Video Downloader`)
+  - Creates Start Menu & Desktop shortcuts with canonical Falcon icon
+  - Registers clean uninstaller in Windows *Add or Remove Programs*
+  - Preserves user downloads and settings upon update/uninstall
+- **Standalone Portable EXE:** `Tukdify-Video-Downloader.exe`
+  - Single-file zero-install executable — run directly from any folder or USB drive
+  - Pre-packaged with FFmpeg 7.1 essentials
 
 ---
 
