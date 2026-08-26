@@ -10,6 +10,7 @@ env/
 # PyInstaller build output
 build/
 dist/
+release_build/
 *.spec.bak
 
 # Bundled binaries fetched at build time (never commit ffmpeg)
