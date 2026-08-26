@@ -19,9 +19,9 @@
 **Tukdify Video Downloader** is a high-performance desktop media utility engineered for creators, video editors, and archivists. Built with Python, CustomTkinter, and yt-dlp, it provides a fast, private, offline-first workflow for downloading 4K video, 320kbps MP3 audio, cover art, and subtitles across 1,000+ platforms.
 
 Part of the **Tukdify Creator Ecosystem**:
-- 🎬 **[Tukdify Clips](https://github.com/tukdify/Tukdify-clips)** — AI Long-Form to Viral Shorts Studio
+- 🎬 **[Tukdify Clips](https://github.com/Tukdify/Tukdify-clips)** — AI Long-Form to Viral Shorts Studio
 - ⬇️ **[Tukdify Video Downloader](https://github.com/Tukdify/Tukdify-Video-Downloader)** — Universal 4K & MP3 Ingestion
-- ⚡ **[Tukdify Multicompressor](https://github.com/Tukdify)** — GPU-Accelerated Media Optimizer
+- ⚡ **[Tukdify Multicompressor](https://github.com/Tukdify/Tukdify-Multicompressor)** — GPU-Accelerated Media Optimizer
 
 ---
 

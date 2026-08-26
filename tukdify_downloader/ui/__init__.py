@@ -1,1 +1,1 @@
-"""CustomTkinter user interface for MediaForge."""
+"""CustomTkinter user interface for Tukdify Video Downloader."""
